@@ -15,3 +15,11 @@ class VideoNoteViewSet(ViewSet):
         print(transcript)
         response = FileResponse(audio)
         return response
+
+
+class TranscribeViewSet(ViewSet):
+    pass
+
+
+class VoiceChangerViewSet(ViewSet):
+    pass
