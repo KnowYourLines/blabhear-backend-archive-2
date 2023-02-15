@@ -1,13 +1,17 @@
 from django.http import FileResponse
 from rest_framework.viewsets import ViewSet
 
-from api.serializers import UploadSerializer
+from api.serializers import VideoNoteInputSerializer
 
 
-class UploadViewSet(ViewSet):
-    serializer_class = UploadSerializer
+class VideoNoteViewSet(ViewSet):
+    serializer_class = VideoNoteInputSerializer
 
     def create(self, request):
-        file_uploaded = request.FILES.get("file_uploaded")
-        response = FileResponse(file_uploaded)
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        audio = serializer.validated_data["audio"]
+        transcript = serializer.validated_data["transcript"]
+        print(transcript)
+        response = FileResponse(audio)
         return response
