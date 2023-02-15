@@ -22,3 +22,4 @@ services:
       - DEBUG=True
       - LOCAL=True
       - ALLOWED_HOSTS=localhost
+      - DEEPGRAM_API_KEY=
