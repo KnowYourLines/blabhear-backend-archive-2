@@ -7,3 +7,4 @@ pydub
 pedalboard
 Pillow
 moviepy
+deepgram-sdk

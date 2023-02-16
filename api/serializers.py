@@ -6,3 +6,6 @@ class VideoNoteInputSerializer(Serializer):
     audio = FileField()
     transcript = CharField(allow_blank=True)
 
+
+class TranscribeInputSerializer(Serializer):
+    audio = FileField()

@@ -1,6 +1,8 @@
+import os
 import tempfile
 
 from PIL import ImageFont, Image, ImageDraw
+from deepgram import Deepgram
 from django.http import FileResponse
 from moviepy.audio.io.AudioFileClip import AudioFileClip
 from moviepy.video.VideoClip import ImageClip
@@ -8,9 +10,12 @@ from pedalboard import Pedalboard
 from pedalboard_native import PitchShift
 from pedalboard_native.io import AudioFile
 from pydub import AudioSegment
+from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
-from api.serializers import VideoNoteInputSerializer
+from api.serializers import VideoNoteInputSerializer, TranscribeInputSerializer
+
+DEEPGRAM_CLIENT = Deepgram(os.environ.get("DEEPGRAM_API_KEY"))
 
 
 class VideoNoteViewSet(ViewSet):
@@ -21,7 +26,6 @@ class VideoNoteViewSet(ViewSet):
         serializer.is_valid(raise_exception=True)
         audio = serializer.validated_data["audio"]
         transcript = serializer.validated_data["transcript"]
-        print(transcript)
         song = AudioSegment.from_file(audio)
         tmp_mp3 = tempfile.NamedTemporaryFile(suffix=".mp3")
         song.export(tmp_mp3.name, format="mp3")
@@ -63,8 +67,19 @@ class VideoNoteViewSet(ViewSet):
 
 
 class TranscribeViewSet(ViewSet):
-    pass
+    serializer_class = TranscribeInputSerializer
 
-
-class VoiceChangerViewSet(ViewSet):
-    pass
+    def create(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        audio = serializer.validated_data["audio"]
+        source = {"buffer": audio, "mimetype": "audio/ogg"}
+        options = {
+            "punctuate": True,
+            "model": "general",
+            "language": "en",
+            "tier": "base",
+        }
+        response = DEEPGRAM_CLIENT.transcription.sync_prerecorded(source, options)
+        transcript = response["results"]["channels"][0]["alternatives"][0]["transcript"]
+        return Response({"transcript": transcript})
