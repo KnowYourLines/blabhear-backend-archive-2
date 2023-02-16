@@ -40,24 +40,21 @@ class VideoNoteViewSet(ViewSet):
             # Write the audio back as a wav file:
             with AudioFile(tmp_wav.name, "w", samplerate, effected.shape[0]) as f:
                 f.write(effected)
+
         width = 512
         height = 512
         message = "Hello boss!"
         font = ImageFont.truetype("arial.ttf", size=24)
         img = Image.new("RGB", (width, height), color="blue")
-
-        imgDraw = ImageDraw.Draw(img)
-
-        textWidth, textHeight = imgDraw.textsize(message, font=font)
-
-        imgDraw.text((10, 10), message, font=font, fill=(255, 255, 0))
+        img_draw = ImageDraw.Draw(img)
+        img_draw.textsize(message, font=font)
+        img_draw.text((10, 10), message, font=font, fill=(255, 255, 0))
         tmp_img = tempfile.NamedTemporaryFile(suffix=".png")
         img.save(tmp_img.name)
 
         audio = AudioFileClip(tmp_wav.name)
         clip = ImageClip(tmp_img.name).set_duration(audio.duration)
         clip = clip.set_audio(audio)
-
         tmp_vid = tempfile.NamedTemporaryFile(suffix=".mp4")
         clip.write_videofile(tmp_vid.name, fps=1, logger=None)
 
