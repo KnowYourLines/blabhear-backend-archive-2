@@ -1,29 +1,27 @@
-import os
 import tempfile
 
 from PIL import ImageFont, Image, ImageDraw
-from deepgram import Deepgram
 from django.http import FileResponse
 from moviepy.audio.io.AudioFileClip import AudioFileClip
 from moviepy.video.VideoClip import ImageClip
-from pedalboard import Pedalboard
-from pedalboard_native import PitchShift
 from pedalboard_native.io import AudioFile
 from pydub import AudioSegment
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
+from api.constants import VOICE_EFFECTS, DEEPGRAM_CLIENT
 from api.serializers import VideoNoteInputSerializer, TranscribeInputSerializer
-
-DEEPGRAM_CLIENT = Deepgram(os.environ.get("DEEPGRAM_API_KEY"))
-VOICE_EFFECTS = {"High Pitch": Pedalboard([PitchShift(5)])}
 
 
 class VideoNoteViewSet(ViewSet):
     serializer_class = VideoNoteInputSerializer
 
+    def get_serializer(self, *args, **kwargs):
+        serializer_class = self.serializer_class
+        return serializer_class(*args, **kwargs)
+
     def create(self, request):
-        serializer = self.serializer_class(data=request.data)
+        serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         audio = serializer.validated_data["audio"]
         transcript = serializer.validated_data["transcript"]
