@@ -47,12 +47,11 @@ class VideoNoteViewSet(ViewSet):
 
         width = 512
         height = 512
-        message = "Hello boss!"
         font = ImageFont.truetype("arial.ttf", size=24)
         img = Image.new("RGB", (width, height), color="blue")
         img_draw = ImageDraw.Draw(img)
-        img_draw.textsize(message, font=font)
-        img_draw.text((10, 10), message, font=font, fill=(255, 255, 0))
+        img_draw.textsize(transcript, font=font)
+        img_draw.text((10, 10), transcript, font=font, fill=(255, 255, 0))
         tmp_img = tempfile.NamedTemporaryFile(suffix=".png")
         img.save(tmp_img.name)
 
