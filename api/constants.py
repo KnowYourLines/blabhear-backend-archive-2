@@ -10,10 +10,10 @@ VOICE_EFFECTS = {
     "Low Pitch": Pedalboard([PitchShift(-5)]),
     "Wobble": Pedalboard([Chorus(rate_hz=10, mix=1)]),
     "Echo": Pedalboard([Delay(delay_seconds=0.125, feedback=0.75, mix=0.5)]),
-    "High Echo": Pedalboard([Delay(delay_seconds=0.125, feedback=0.75, mix=0.5), PitchShift(5)]),
-    "Low Echo": Pedalboard([Delay(delay_seconds=0.125, feedback=0.75, mix=0.5), PitchShift(-5)]),
-    "High Wobble": Pedalboard([Chorus(rate_hz=10, mix=1), PitchShift(5)]),
-    "Low Wobble": Pedalboard([Chorus(rate_hz=10, mix=1), PitchShift(-5)]),
+    "High Echo": Pedalboard([PitchShift(5), Delay(delay_seconds=0.125, feedback=0.75, mix=0.5)]),
+    "Low Echo": Pedalboard([PitchShift(-5), Delay(delay_seconds=0.125, feedback=0.75, mix=1)]),
+    "High Wobble": Pedalboard([PitchShift(5), Chorus(rate_hz=10, mix=1)]),
+    "Low Wobble": Pedalboard([PitchShift(-5), Chorus(rate_hz=10, mix=1)]),
 }
 LANGUAGES = [
     ("en", "English"),
