@@ -1,7 +1,7 @@
 from rest_framework.fields import FileField, CharField, ChoiceField
 from rest_framework.serializers import Serializer
 
-from api.constants import VOICE_EFFECTS
+from api.constants import VOICE_EFFECTS, LANGUAGES
 
 
 class VideoNoteInputSerializer(Serializer):
@@ -15,3 +15,6 @@ class VideoNoteInputSerializer(Serializer):
 
 class TranscribeInputSerializer(Serializer):
     audio = FileField()
+    language = ChoiceField(
+        choices=LANGUAGES,
+    )

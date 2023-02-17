@@ -50,7 +50,7 @@ class VideoNoteViewSet(ViewSet):
 
         width = 512
         height = 512
-        font = ImageFont.truetype("arial.ttf", size=24)
+        font = ImageFont.truetype("arial-unicode-ms.ttf", size=24)
         img = Image.new("RGB", (width, height), color="blue")
         img_draw = ImageDraw.Draw(img)
         img_draw.textsize(transcript, font=font)
@@ -71,16 +71,21 @@ class VideoNoteViewSet(ViewSet):
 class TranscribeViewSet(ViewSet):
     serializer_class = TranscribeInputSerializer
 
+    def get_serializer(self, *args, **kwargs):
+        serializer_class = self.serializer_class
+        return serializer_class(*args, **kwargs)
+
     def create(self, request):
-        serializer = self.serializer_class(data=request.data)
+        serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         audio = serializer.validated_data["audio"]
+        language = serializer.validated_data["language"]
         source = {"buffer": audio, "mimetype": "audio/ogg"}
         options = {
             "punctuate": True,
             "model": "general",
-            "language": "en",
-            "tier": "base",
+            "language": language,
+            "tier": "base" if language != "ta" else "enhanced",
         }
         response = DEEPGRAM_CLIENT.transcription.sync_prerecorded(source, options)
         transcript = response["results"]["channels"][0]["alternatives"][0]["transcript"]
