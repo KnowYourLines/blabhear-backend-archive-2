@@ -5,7 +5,10 @@ from pedalboard import Pedalboard
 from pedalboard_native import PitchShift
 
 DEEPGRAM_CLIENT = Deepgram(os.environ.get("DEEPGRAM_API_KEY"))
-VOICE_EFFECTS = {"High Pitch": Pedalboard([PitchShift(5)])}
+VOICE_EFFECTS = {
+    "High Pitch": Pedalboard([PitchShift(5)]),
+    "Low Pitch": Pedalboard([PitchShift(-5)]),
+}
 LANGUAGES = [
     ("en", "English"),
     ("en-GB", "English (GB)"),
