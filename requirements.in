@@ -8,3 +8,4 @@ pedalboard
 Pillow
 moviepy
 deepgram-sdk
+gunicorn
