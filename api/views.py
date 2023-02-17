@@ -1,4 +1,5 @@
 import tempfile
+import textwrap
 
 from PIL import ImageFont, Image, ImageDraw
 from django.http import FileResponse
@@ -48,13 +49,20 @@ class VideoNoteViewSet(ViewSet):
                 with AudioFile(tmp_wav.name, "w", samplerate, effected.shape[0]) as f:
                     f.write(effected)
 
-        width = 512
-        height = 512
+        img_width = 512
+        img_height = 512
+        txt_start_height = 20
+        txt_start_width = 20
         font = ImageFont.truetype("arial-unicode-ms.ttf", size=24)
-        img = Image.new("RGB", (width, height), color="blue")
+        img = Image.new("RGB", (img_width, img_height), color="blue")
         img_draw = ImageDraw.Draw(img)
         img_draw.textsize(transcript, font=font)
-        img_draw.text((10, 10), transcript, font=font, fill=(255, 255, 0))
+        txt_height = txt_start_height
+        lines = textwrap.wrap(transcript, width=40)
+        for line in lines:
+            line_width, line_height = font.getsize(line)
+            img_draw.text((txt_start_width, txt_height), line, font=font, fill=(255, 255, 0))
+            txt_height += line_height
         tmp_img = tempfile.NamedTemporaryFile(suffix=".png")
         img.save(tmp_img.name)
 
