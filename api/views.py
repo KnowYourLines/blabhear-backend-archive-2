@@ -16,6 +16,7 @@ from rest_framework.viewsets import ViewSet
 from api.serializers import VideoNoteInputSerializer, TranscribeInputSerializer
 
 DEEPGRAM_CLIENT = Deepgram(os.environ.get("DEEPGRAM_API_KEY"))
+VOICE_EFFECTS = {"High Pitch": Pedalboard([PitchShift(5)])}
 
 
 class VideoNoteViewSet(ViewSet):
@@ -26,24 +27,28 @@ class VideoNoteViewSet(ViewSet):
         serializer.is_valid(raise_exception=True)
         audio = serializer.validated_data["audio"]
         transcript = serializer.validated_data["transcript"]
+        effect = serializer.validated_data["effect"]
         song = AudioSegment.from_file(audio)
         tmp_mp3 = tempfile.NamedTemporaryFile(suffix=".mp3")
         song.export(tmp_mp3.name, format="mp3")
-        tmp_wav = tempfile.NamedTemporaryFile(suffix=".wav")
+        vidnote_audio = tmp_mp3
+        voice_effect = VOICE_EFFECTS.get(effect)
+        if voice_effect:
+            tmp_wav = tempfile.NamedTemporaryFile(suffix=".wav")
+            vidnote_audio = tmp_wav
+            with AudioFile(tmp_mp3.name) as f:
+                audio = f.read(f.frames)
+                samplerate = f.samplerate
 
-        with AudioFile(tmp_mp3.name) as f:
-            audio = f.read(f.frames)
-            samplerate = f.samplerate
+                # Make a Pedalboard object, containing multiple plugins:
+                board = voice_effect
 
-            # Make a Pedalboard object, containing multiple plugins:
-            board = Pedalboard([PitchShift(5)])
+                # Run the audio through this pedalboard!
+                effected = board(audio, samplerate)
 
-            # Run the audio through this pedalboard!
-            effected = board(audio, samplerate)
-
-            # Write the audio back as a wav file:
-            with AudioFile(tmp_wav.name, "w", samplerate, effected.shape[0]) as f:
-                f.write(effected)
+                # Write the audio back as a wav file:
+                with AudioFile(tmp_wav.name, "w", samplerate, effected.shape[0]) as f:
+                    f.write(effected)
 
         width = 512
         height = 512
@@ -55,7 +60,7 @@ class VideoNoteViewSet(ViewSet):
         tmp_img = tempfile.NamedTemporaryFile(suffix=".png")
         img.save(tmp_img.name)
 
-        audio = AudioFileClip(tmp_wav.name)
+        audio = AudioFileClip(vidnote_audio.name)
         clip = ImageClip(tmp_img.name).set_duration(audio.duration)
         clip = clip.set_audio(audio)
         tmp_vid = tempfile.NamedTemporaryFile(suffix=".mp4")
