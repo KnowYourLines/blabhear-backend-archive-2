@@ -10,29 +10,21 @@ VOICE_EFFECTS = {
     "High Pitch": Pedalboard([PitchShift(5)]),
     "Low Pitch": Pedalboard([PitchShift(-5)]),
     "Wobble": Pedalboard([Chorus(rate_hz=10, mix=0.75)]),
-    "Echo": Pedalboard(
-        [Delay(delay_seconds=0.125, feedback=0.75, mix=0.5), Gain(gain_db=3)]
-    ),
+    "Echo": Pedalboard([Delay(delay_seconds=0.125, feedback=0.75, mix=0.5)]),
     "High Echo": Pedalboard(
         [
             PitchShift(5),
             Delay(delay_seconds=0.125, feedback=0.75, mix=0.5),
-            Gain(gain_db=3),
         ]
     ),
     "Low Echo": Pedalboard(
         [
             PitchShift(-5),
             Delay(delay_seconds=0.125, feedback=0.75, mix=1),
-            Gain(gain_db=3),
         ]
     ),
-    "High Wobble": Pedalboard(
-        [PitchShift(5), Chorus(rate_hz=10, mix=0.75), Gain(gain_db=3)]
-    ),
-    "Low Wobble": Pedalboard(
-        [PitchShift(-5), Chorus(rate_hz=10, mix=0.75), Gain(gain_db=3)]
-    ),
+    "High Wobble": Pedalboard([PitchShift(5), Chorus(rate_hz=10, mix=0.75)]),
+    "Low Wobble": Pedalboard([PitchShift(-5), Chorus(rate_hz=10, mix=0.75)]),
     "Copycats": Pedalboard(
         [
             Mix(
@@ -46,14 +38,12 @@ VOICE_EFFECTS = {
                         [
                             PitchShift(-3),
                             Delay(delay_seconds=0.5, mix=1.0),
-                            Gain(gain_db=3),
                         ]
                     ),
                     Pedalboard(
                         [
                             PitchShift(3),
                             Delay(delay_seconds=0.25, mix=1.0),
-                            Gain(gain_db=3),
                         ]
                     ),
                     Pedalboard([PitchShift(5)]),
