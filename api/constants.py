@@ -87,3 +87,18 @@ LANGUAGES = [
     ("zh-CN", "Chinese (CN)"),
     ("zh-TW", "Chinese (TW)"),
 ]
+BASE_TIER_LANGUAGES = {
+    "zh",
+    "zh-CN",
+    "zh-TW",
+    "en-AU",
+    "en-GB",
+    "en-IN",
+    "en-NZ",
+    "fr-CA",
+    "hi-Latn",
+    "id",
+    "ru",
+    "tr",
+    "uk",
+}

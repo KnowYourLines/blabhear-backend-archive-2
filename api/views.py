@@ -10,7 +10,7 @@ from pydub import AudioSegment
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
-from api.constants import VOICE_EFFECTS, DEEPGRAM_CLIENT
+from api.constants import VOICE_EFFECTS, DEEPGRAM_CLIENT, BASE_TIER_LANGUAGES
 from api.serializers import VideoNoteInputSerializer, TranscribeInputSerializer
 
 
@@ -61,7 +61,9 @@ class VideoNoteViewSet(ViewSet):
         lines = textwrap.wrap(transcript, width=40)
         for line in lines:
             line_width, line_height = font.getsize(line)
-            img_draw.text((txt_start_width, txt_height), line, font=font, fill=(255, 255, 0))
+            img_draw.text(
+                (txt_start_width, txt_height), line, font=font, fill=(255, 255, 0)
+            )
             txt_height += line_height
         tmp_img = tempfile.NamedTemporaryFile(suffix=".png")
         img.save(tmp_img.name)
@@ -93,7 +95,7 @@ class TranscribeViewSet(ViewSet):
             "punctuate": True,
             "model": "general",
             "language": language,
-            "tier": "base" if language != "ta" else "enhanced",
+            "tier": "enhanced" if language not in BASE_TIER_LANGUAGES else "base",
         }
         response = DEEPGRAM_CLIENT.transcription.sync_prerecorded(source, options)
         transcript = response["results"]["channels"][0]["alternatives"][0]["transcript"]
