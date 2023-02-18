@@ -38,12 +38,9 @@ services:
         fromService:
           name: blabhear-backend
           type: web
-          property: hostport
+          property: host
       - key: CORS_ALLOWED_ORIGINS
-        fromService:
-          name: blabhear-frontend
-          type: web
-          property: hostport
+        value: https://blabhear.com
       - key: DATABASE_URL
         fromDatabase:
           name: blabhear-db
