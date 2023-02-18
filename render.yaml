@@ -12,7 +12,7 @@ services:
         fromService:
           name: blabhear-backend
           type: web
-          envVarKey: RENDER_EXTERNAL_URL
+          property: hostport
 
   - type: web
     name: blabhear-backend
