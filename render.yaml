@@ -35,10 +35,7 @@ services:
       - key: SECRET_KEY
         generateValue: true
       - key: ALLOWED_HOSTS
-        fromService:
-          name: blabhear-backend
-          type: web
-          property: host
+        value: blabhear.com
       - key: CORS_ALLOWED_ORIGINS
         value: https://blabhear.com
       - key: DATABASE_URL
