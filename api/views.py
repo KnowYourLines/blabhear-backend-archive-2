@@ -48,6 +48,7 @@ class VideoNoteViewSet(ViewSet):
                 # Write the audio back as a wav file:
                 with AudioFile(tmp_wav.name, "w", samplerate, effected.shape[0]) as f:
                     f.write(effected)
+            tmp_mp3.close()
 
         img_width = 512
         img_height = 512
@@ -73,7 +74,8 @@ class VideoNoteViewSet(ViewSet):
         clip = clip.set_audio(audio)
         tmp_vid = tempfile.NamedTemporaryFile(suffix=".mp4")
         clip.write_videofile(tmp_vid.name, fps=1, logger=None)
-
+        tmp_img.close()
+        vidnote_audio.close()
         response = FileResponse(tmp_vid)
         return response
 
